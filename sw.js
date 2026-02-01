@@ -1,15 +1,15 @@
-const CACHE_NAME = 'saiyan-tracker-v7';
+const CACHE_NAME = 'saiyan-tracker-v9';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './assets/img/goku-base.png',
-  './assets/img/goku-ssj.png',
-  './assets/img/goku-ssj2.png',
-  './assets/img/goku-ssj3.png',
-  './assets/img/goku-ssj4.png',
-  './assets/img/goku-ssj5.png',
-  './assets/audio/check-ssj.mp3'
+  'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-base.png',
+  'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj.png',
+  'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj2.png',
+  'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj3.png',
+  'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj4.png',
+  'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj5.png',
+  'https://raw.githubusercontent.com/rafaelcastrocouto/dbz/master/audio/check.mp3'
 ];
 
 self.addEventListener('install', (event) => {
@@ -20,7 +20,7 @@ self.addEventListener('install', (event) => {
       ).then(results => {
         const failed = results.filter(r => r.status === 'rejected');
         if (failed.length > 0) {
-          console.warn('Algunos assets no se pudieron cachear localmente:', failed);
+          console.warn('Algunos assets remotos no se pudieron cachear para offline:', failed);
         }
         return cache;
       });

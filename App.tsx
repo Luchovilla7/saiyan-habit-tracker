@@ -3,10 +3,9 @@ import { supabaseClient } from './services/supabase';
 import { Habit, HistoryRecord, Transformation } from './types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
-// The Transformation objects now correctly match the interface in types.ts
 const TRANSFORMATIONS: Record<string, Transformation> = {
   base: {
-    image: "./assets/img/goku-base.png",
+    image: "https://images.stickpng.com/images/584da250d4734b4136933333.png",
     fallback: "https://www.pngmart.com/files/2/Goku-PNG-File.png",
     name: "ESTADO: BASE",
     auraColor: "rgba(255,255,255,0.3)",
@@ -14,7 +13,7 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ffcc00"
   },
   ssj: {
-    image: "./assets/img/goku-ssj.png",
+    image: "https://images.stickpng.com/images/584da260d4734b4136933334.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-PNG-Clipart.png",
     name: "SUPER SAIYAJIN",
     auraColor: "rgba(255, 204, 0, 0.7)",
@@ -22,15 +21,15 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ffcc00"
   },
   ssj2: {
-    image: "./assets/img/goku-ssj2.png",
-    fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-PNG-Clipart.png",
+    image: "https://images.stickpng.com/images/584da277d4734b4136933335.png",
+    fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-PNG-Photos.png",
     name: "SUPER SAIYAJIN FASE 2",
     auraColor: "rgba(255, 255, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj3: {
-    image: "./assets/img/goku-ssj3.png",
+    image: "https://images.stickpng.com/images/584da220d4734b4136933331.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-3-PNG-Photos.png",
     name: "SUPER SAIYAJIN FASE 3",
     auraColor: "rgba(255, 215, 0, 0.9)",
@@ -38,7 +37,7 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ffcc00"
   },
   ssj4: {
-    image: "./assets/img/goku-ssj4.png",
+    image: "https://images.stickpng.com/images/584da244d4734b4136933332.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-4-PNG-Pic.png",
     name: "SUPER SAIYAJIN FASE 4",
     auraColor: "rgba(255, 0, 0, 0.8)",
@@ -46,9 +45,9 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ff4444"
   },
   ssj5: {
-    image: "./assets/img/goku-ssj5.png",
+    image: "https://images.stickpng.com/images/584da207d4734b413693332f.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Ultra-Instinct-PNG-Transparent.png",
-    name: "¡SUPER SAIYAJIN FASE 5 (AF)!",
+    name: "¡MODO BESTIA / AF SSJ 5!",
     auraColor: "rgba(220, 220, 220, 0.9)",
     kiColor: "linear-gradient(90deg, #999 0%, #ffffff 100%)",
     textColor: "#ffffff"
@@ -170,7 +169,7 @@ const App: React.FC = () => {
         if (newDone && checkSoundRef.current) {
           checkSoundRef.current.currentTime = 0;
           checkSoundRef.current.play().catch(e => {
-            console.warn("Audio local no disponible o bloqueado. Intentando reproducir.");
+            console.warn("Error al reproducir sonido:", e);
           });
         }
         return { ...h, done: newDone };
@@ -181,7 +180,6 @@ const App: React.FC = () => {
     saveState(newHabits, id);
   };
 
-  // Reordered: Calculate current transformation values before defining handleImageError
   const completedCount = habits.filter(h => h.done).length;
   const totalHabits = habits.length;
   const progressPercent = totalHabits > 0 ? (completedCount / totalHabits) * 100 : 0;
@@ -190,13 +188,11 @@ const App: React.FC = () => {
   const currentKey = transformationOrder[completedCount] || 'base';
   const currentTransformation = TRANSFORMATIONS[currentKey];
 
-  // handleImageError now correctly identifies fallback property on the Transformation type
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.target as HTMLImageElement;
     const currentTrans = TRANSFORMATIONS[currentKey];
     if (target.src !== currentTrans.fallback) {
-      console.warn(`Asset local no encontrado: ${target.src}. Cargando fallback de red.`);
-      target.src = currentTrans.fallback || "https://api.dicebear.com/7.x/bottts/svg?seed=goku";
+      target.src = currentTrans.fallback;
     }
   };
 
@@ -218,24 +214,6 @@ const App: React.FC = () => {
       };
     });
   };
-
-  const getMonthlyData = () => {
-    const today = new Date();
-    return Array.from({ length: 5 }, (_, i) => {
-      const date = new Date();
-      const idx = i as number;
-      date.setDate(today.getDate() - ((4 - idx) * 7));
-      return {
-        name: `Sem -${4 - idx}`,
-        ki: (Object.entries(history) as [string, number][])
-          .filter(([d]) => new Date(d) <= date && new Date(d) > new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000))
-          .reduce((acc: number, [, v]: [string, number], _idx: number, arr: [string, number][]) => acc + (v / (arr.length || 1)), 0) || 0
-      };
-    });
-  };
-
-  const allValues = Object.values(history) as number[];
-  const avgPwr = allValues.length ? allValues.reduce((a, b) => a + b, 0) / allValues.length : 0;
 
   if (!session) {
     return (
@@ -276,7 +254,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center min-h-screen p-5 pb-20">
-      <h1 className="font-bangers text-[3.5rem] text-dbz-orange drop-shadow-[4px_4px_0px_#0046AD] mb-1 tracking-widest text-center">SAIYAN TRACKER</h1>
+      <h1 className="font-bangers text-[3.5rem] text-dbz-orange drop-shadow-[4px_4px_0px_#0046AD] mb-1 tracking-widest text-center uppercase">Saiyan Tracker</h1>
       
       <div className="h-10 text-center mb-4">
         <span className="font-bangers text-2xl" style={{ color: currentTransformation.textColor }}>
@@ -284,7 +262,7 @@ const App: React.FC = () => {
         </span>
       </div>
 
-      <audio ref={checkSoundRef} src="./assets/audio/check-ssj.mp3" preload="auto" />
+      <audio ref={checkSoundRef} src="https://raw.githubusercontent.com/rafaelcastrocouto/dbz/master/audio/check.mp3" preload="auto" />
 
       <div className={`relative w-[300px] h-[350px] flex justify-center items-center mb-5 ${isCharging ? 'animate-aura-shake' : ''}`}>
         <div 
