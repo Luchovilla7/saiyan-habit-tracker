@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -6,9 +7,10 @@
     <title>Saiyan Habit Tracker</title>
     
     <!-- PWA Core -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF9000">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="SaiyanTracker">
     <link rel="icon" href="https://img.icons8.com/color/48/dragon-ball.png" type="image/png">
     
     <!-- Apple PWA Tags -->
@@ -53,8 +55,19 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('Saiyan SW Registrado'))
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(reg => {
+              console.log('Saiyan SW Registrado');
+              // Forzar actualización si hay un nuevo SW
+              reg.onupdatefound = () => {
+                const installingWorker = reg.installing;
+                installingWorker.onstatechange = () => {
+                  if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    window.location.reload();
+                  }
+                };
+              };
+            })
             .catch(err => console.error('Error SW:', err));
         });
       }

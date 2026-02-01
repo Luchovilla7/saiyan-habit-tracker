@@ -1,9 +1,11 @@
+
 {
   "name": "Saiyan Habit Tracker",
   "short_name": "SaiyanTracker",
   "description": "Transform into a Super Saiyan by completing your daily habits.",
-  "id": "/",
+  "id": "com.saiyan.habittracker.v1",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#FF9000",
@@ -26,6 +28,12 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "https://img.icons8.com/color/512/dragon-ball.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
