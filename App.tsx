@@ -6,42 +6,42 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const TRANSFORMATIONS: Record<string, Transformation> = {
   base: {
-    image: "img/goku-base.png",
+    image: "assets/img/goku-base.png",
     name: "ESTADO: BASE",
     auraColor: "rgba(255,255,255,0.3)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
-  ssj1: {
-    image: "img/goku-ssj.png",
+  ssj: {
+    image: "assets/img/goku-ssj.png",
     name: "SUPER SAIYAJIN",
     auraColor: "rgba(255, 204, 0, 0.7)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj2: {
-    image: "img/goku-ssj2.png",
+    image: "assets/img/goku-ssj2.png",
     name: "SUPER SAIYAJIN FASE 2",
     auraColor: "rgba(255, 255, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj3: {
-    image: "img/goku-ssj3.png",
+    image: "assets/img/goku-ssj3.png",
     name: "SUPER SAIYAJIN FASE 3",
     auraColor: "rgba(255, 215, 0, 0.9)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj4: {
-    image: "img/goku-ssj4.png",
+    image: "assets/img/goku-ssj4.png",
     name: "SUPER SAIYAJIN FASE 4",
     auraColor: "rgba(255, 0, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #7b0000 0%, #ff0000 100%)",
     textColor: "#ff4444"
   },
   ssj5: {
-    image: "img/goku-ssj5.png",
+    image: "assets/img/goku-ssj5.png",
     name: "¡SUPER SAIYAJIN FASE 5 (AF)!",
     auraColor: "rgba(220, 220, 220, 0.9)",
     kiColor: "linear-gradient(90deg, #999 0%, #ffffff 100%)",
@@ -57,10 +57,10 @@ const App: React.FC = () => {
   const [syncStatus, setSyncStatus] = useState({ text: "(Cargando Ki...)", color: "#555" });
   const [isCharging, setIsCharging] = useState(false);
   const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState('');
 
   const checkSoundRef = useRef<HTMLAudioElement | null>(null);
-  const transformSoundRef = useRef<HTMLAudioElement | null>(null);
 
   // Auth Effects
   useEffect(() => {
@@ -162,6 +162,7 @@ const App: React.FC = () => {
     const newHabits = habits.map(h => {
       if (h.id === id) {
         const newDone = !h.done;
+        // Reproducir audio cada vez que se selecciona (check) un hábito
         if (newDone && checkSoundRef.current) {
           checkSoundRef.current.currentTime = 0;
           checkSoundRef.current.play().catch(() => {});
@@ -192,26 +193,22 @@ const App: React.FC = () => {
     }
   };
 
-  // Transformation logic
+  // Lógica de transformación basada estrictamente en la cantidad de hábitos (0 a 5)
   const completedCount = habits.filter(h => h.done).length;
-  const progress = habits.length > 0 ? (completedCount / habits.length) * 100 : 0;
+  const totalHabits = habits.length;
+  const progressPercent = totalHabits > 0 ? (completedCount / totalHabits) * 100 : 0;
   
-  let currentTransformation = TRANSFORMATIONS.base;
-  if (progress === 100) currentTransformation = TRANSFORMATIONS.ssj5;
-  else if (progress > 60) currentTransformation = TRANSFORMATIONS.ssj4;
-  else if (progress > 40) currentTransformation = TRANSFORMATIONS.ssj3;
-  else if (progress > 20) currentTransformation = TRANSFORMATIONS.ssj2;
-  else if (progress > 0) currentTransformation = TRANSFORMATIONS.ssj1;
+  // Mapeo solicitado: 0=base, 1=ssj, 2=ssj2, 3=ssj3, 4=ssj4, 5=ssj5
+  const transformationOrder = ['base', 'ssj', 'ssj2', 'ssj3', 'ssj4', 'ssj5'];
+  const currentKey = transformationOrder[completedCount] || 'base';
+  const currentTransformation = TRANSFORMATIONS[currentKey];
 
   useEffect(() => {
-    if (progress > 0 && transformSoundRef.current) {
-        setIsCharging(true);
-        transformSoundRef.current.currentTime = 0;
-        transformSoundRef.current.play().catch(() => {});
-        const timer = setTimeout(() => setIsCharging(false), 600);
-        return () => clearTimeout(timer);
-    }
-  }, [currentTransformation.name, progress]);
+    // Activar efecto de sacudida de aura cuando cambia la transformación
+    setIsCharging(true);
+    const timer = setTimeout(() => setIsCharging(false), 500);
+    return () => clearTimeout(timer);
+  }, [completedCount]);
 
   // Analytics Helpers
   const getWeeklyData = () => {
@@ -281,13 +278,23 @@ const App: React.FC = () => {
               value={loginForm.email}
               onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
             />
-            <input 
-              type="password" 
-              className="w-full p-4 mb-5 bg-[#111] border border-[#333] rounded-lg text-white" 
-              placeholder="Contraseña"
-              value={loginForm.password}
-              onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
-            />
+            <div className="relative mb-5">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                className="w-full p-4 bg-[#111] border border-[#333] rounded-lg text-white pr-12" 
+                placeholder="Contraseña"
+                value={loginForm.password}
+                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-dbz-orange text-xl hover:text-white transition-colors"
+                title={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
+              >
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+            </div>
             <button type="submit" className="w-full p-4 bg-dbz-orange rounded-lg font-bangers text-2xl text-white hover:bg-[#ffaa33] transition-all">ENTRAR A ENTRENAR</button>
           </form>
           {loginError && <p className="text-red-500 mt-5 text-sm">{loginError}</p>}
@@ -306,40 +313,39 @@ const App: React.FC = () => {
         </span>
       </div>
 
-      <audio ref={checkSoundRef} src="audio/check-ssj.mp3" preload="auto" />
-      <audio ref={transformSoundRef} src="transform-sound.mp3" preload="auto" />
+      {/* Audio para feedback de check */}
+      <audio ref={checkSoundRef} src="assets/audio/check-ssj.mp3" preload="auto" />
 
-      {/* Goku Container */}
+      {/* Goku Container - Cambia dinámicamente según completedCount */}
       <div className={`relative w-[300px] h-[350px] flex justify-center items-center mb-5 ${isCharging ? 'animate-aura-shake' : ''}`}>
         <div 
           className="absolute w-[180px] h-[280px] rounded-[50%_50%_20%_20%] blur-[40px] z-1 transition-all duration-700 mix-blend-screen"
           style={{ 
-            opacity: progress > 0 ? 1 : 0, 
+            opacity: completedCount > 0 ? 1 : 0, 
             backgroundColor: currentTransformation.auraColor,
             boxShadow: `0 0 60px 30px ${currentTransformation.auraColor}` 
           }}
         />
         <img 
           src={currentTransformation.image} 
-          alt="Goku" 
-          className="w-full h-full object-contain z-[2] drop-shadow-lg"
-          onError={(e) => { (e.target as HTMLImageElement).src = 'https://picsum.photos/300/350?text=Goku'; }}
+          alt={currentTransformation.name} 
+          className="w-full h-full object-contain z-[2] drop-shadow-lg transition-opacity duration-300"
         />
       </div>
 
       {/* Ki Bar */}
       <div className="w-full max-w-[450px] h-[25px] bg-[#222] border-2 border-[#444] rounded-full overflow-hidden mb-8 shadow-[inset_0_0_10px_#000]">
         <div 
-          className="h-full transition-all duration-700 ease-out shadow-[0_0_15px_#ffcc00]"
+          className="h-full transition-all duration-700 ease-out"
           style={{ 
-            width: `${progress}%`,
+            width: `${progressPercent}%`,
             background: currentTransformation.kiColor,
-            boxShadow: `0 0 15px ${progress === 100 ? '#fff' : (progress > 60 ? '#f00' : '#ffcc00')}`
+            boxShadow: `0 0 15px ${completedCount === 5 ? '#fff' : (completedCount > 3 ? '#f00' : '#ffcc00')}`
           }}
         />
       </div>
 
-      {/* Habit List - Fixed at 5 entries as per user's preference for consistency */}
+      {/* Habit List - Fixed at 5 entries */}
       <ul className="w-full max-w-[450px] space-y-3">
         {habits.slice(0, 5).map(habit => (
           <li 
@@ -364,18 +370,11 @@ const App: React.FC = () => {
             </div>
           </li>
         ))}
-        {habits.length === 0 && (
-          <li className="text-center text-gray-500 italic p-5 border border-dashed border-[#333] rounded-xl">
-            Cargando entrenamientos de la Cámara del Tiempo...
-          </li>
-        )}
       </ul>
 
       {/* Scouter Analytics */}
       <div className="w-full max-w-[800px] bg-[rgba(0,20,0,0.9)] border-2 border-green-500 rounded-2xl mt-10 p-5 shadow-[0_0_20px_rgba(0,255,0,0.3)] relative overflow-hidden">
-        {/* Scanlines Effect */}
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(0,255,0,0.05)_50%,transparent_50%)] bg-[length:100%_4px]" />
-        
         <div className="font-bangers text-[#00ff00] text-2xl text-center border-b border-green-500 pb-3 mb-5 uppercase tracking-widest flex justify-between items-center">
           <span>Análisis de Ki</span>
           <span className="text-xs" style={{ color: syncStatus.color }}>{syncStatus.text}</span>
