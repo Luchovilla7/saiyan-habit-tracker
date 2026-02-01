@@ -5,7 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const TRANSFORMATIONS: Record<string, Transformation> = {
   base: {
-    image: "https://images.stickpng.com/images/584da250d4734b4136933333.png",
+    image: "https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-base.png",
     fallback: "https://www.pngmart.com/files/2/Goku-PNG-File.png",
     name: "ESTADO: BASE",
     auraColor: "rgba(255,255,255,0.3)",
@@ -13,7 +13,7 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ffcc00"
   },
   ssj: {
-    image: "https://images.stickpng.com/images/584da260d4734b4136933334.png",
+    image: "https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-PNG-Clipart.png",
     name: "SUPER SAIYAJIN",
     auraColor: "rgba(255, 204, 0, 0.7)",
@@ -21,7 +21,7 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ffcc00"
   },
   ssj2: {
-    image: "https://images.stickpng.com/images/584da277d4734b4136933335.png",
+    image: "https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj2.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-PNG-Photos.png",
     name: "SUPER SAIYAJIN FASE 2",
     auraColor: "rgba(255, 255, 0, 0.8)",
@@ -29,7 +29,7 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ffcc00"
   },
   ssj3: {
-    image: "https://images.stickpng.com/images/584da220d4734b4136933331.png",
+    image: "https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj3.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-3-PNG-Photos.png",
     name: "SUPER SAIYAJIN FASE 3",
     auraColor: "rgba(255, 215, 0, 0.9)",
@@ -37,7 +37,7 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ffcc00"
   },
   ssj4: {
-    image: "https://images.stickpng.com/images/584da244d4734b4136933332.png",
+    image: "https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj4.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-4-PNG-Pic.png",
     name: "SUPER SAIYAJIN FASE 4",
     auraColor: "rgba(255, 0, 0, 0.8)",
@@ -45,9 +45,9 @@ const TRANSFORMATIONS: Record<string, Transformation> = {
     textColor: "#ff4444"
   },
   ssj5: {
-    image: "https://images.stickpng.com/images/584da207d4734b413693332f.png",
+    image: "https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj5.png",
     fallback: "https://www.pngmart.com/files/2/Goku-Ultra-Instinct-PNG-Transparent.png",
-    name: "¡MODO BESTIA / AF SSJ 5!",
+    name: "SUPER SAIYAJIN FASE 5 (AF)",
     auraColor: "rgba(220, 220, 220, 0.9)",
     kiColor: "linear-gradient(90deg, #999 0%, #ffffff 100%)",
     textColor: "#ffffff"
@@ -262,7 +262,7 @@ const App: React.FC = () => {
         </span>
       </div>
 
-      <audio ref={checkSoundRef} src="https://raw.githubusercontent.com/rafaelcastrocouto/dbz/master/audio/check.mp3" preload="auto" />
+      <audio ref={checkSoundRef} src="https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/audio/check-ssj.mp3" preload="auto" />
 
       <div className={`relative w-[300px] h-[350px] flex justify-center items-center mb-5 ${isCharging ? 'animate-aura-shake' : ''}`}>
         <div 
