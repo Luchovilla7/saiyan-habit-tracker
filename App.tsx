@@ -6,42 +6,42 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const TRANSFORMATIONS: Record<string, Transformation> = {
   base: {
-    image: "assets/img/goku-base.png",
+    image: "img/goku-base.png",
     name: "ESTADO: BASE",
     auraColor: "rgba(255,255,255,0.3)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj: {
-    image: "assets/img/goku-ssj.png",
+    image: "img/goku-ssj.png",
     name: "SUPER SAIYAJIN",
     auraColor: "rgba(255, 204, 0, 0.7)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj2: {
-    image: "assets/img/goku-ssj2.png",
+    image: "img/goku-ssj2.png",
     name: "SUPER SAIYAJIN FASE 2",
     auraColor: "rgba(255, 255, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj3: {
-    image: "assets/img/goku-ssj3.png",
+    image: "img/goku-ssj3.png",
     name: "SUPER SAIYAJIN FASE 3",
     auraColor: "rgba(255, 215, 0, 0.9)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj4: {
-    image: "assets/img/goku-ssj4.png",
+    image: "img/goku-ssj4.png",
     name: "SUPER SAIYAJIN FASE 4",
     auraColor: "rgba(255, 0, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #7b0000 0%, #ff0000 100%)",
     textColor: "#ff4444"
   },
   ssj5: {
-    image: "assets/img/goku-ssj5.png",
+    image: "img/goku-ssj5.png",
     name: "¡SUPER SAIYAJIN FASE 5 (AF)!",
     auraColor: "rgba(220, 220, 220, 0.9)",
     kiColor: "linear-gradient(90deg, #999 0%, #ffffff 100%)",
@@ -162,7 +162,6 @@ const App: React.FC = () => {
     const newHabits = habits.map(h => {
       if (h.id === id) {
         const newDone = !h.done;
-        // Reproducir audio cada vez que se selecciona (check) un hábito
         if (newDone && checkSoundRef.current) {
           checkSoundRef.current.currentTime = 0;
           checkSoundRef.current.play().catch(() => {});
@@ -193,24 +192,20 @@ const App: React.FC = () => {
     }
   };
 
-  // Lógica de transformación basada estrictamente en la cantidad de hábitos (0 a 5)
   const completedCount = habits.filter(h => h.done).length;
   const totalHabits = habits.length;
   const progressPercent = totalHabits > 0 ? (completedCount / totalHabits) * 100 : 0;
   
-  // Mapeo solicitado: 0=base, 1=ssj, 2=ssj2, 3=ssj3, 4=ssj4, 5=ssj5
   const transformationOrder = ['base', 'ssj', 'ssj2', 'ssj3', 'ssj4', 'ssj5'];
   const currentKey = transformationOrder[completedCount] || 'base';
   const currentTransformation = TRANSFORMATIONS[currentKey];
 
   useEffect(() => {
-    // Activar efecto de sacudida de aura cuando cambia la transformación
     setIsCharging(true);
     const timer = setTimeout(() => setIsCharging(false), 500);
     return () => clearTimeout(timer);
   }, [completedCount]);
 
-  // Analytics Helpers
   const getWeeklyData = () => {
     const today = new Date();
     return Array.from({ length: 7 }, (_, i) => {
@@ -269,12 +264,11 @@ const App: React.FC = () => {
       <div className="fixed inset-0 bg-[radial-gradient(circle,_#1a1a1a_0%,_#000_100%)] flex justify-center items-center p-5 z-[1000]">
         <div className="bg-[rgba(0,20,0,0.95)] border-2 border-dbz-orange rounded-[20px] p-10 w-full max-w-[400px] shadow-[0_0_30px_rgba(255,144,0,0.2)] text-center">
           <h2 className="font-bangers text-dbz-orange text-[2.5rem] mb-8 tracking-[2px]">ENTRADA SAIYAN</h2>
-          <p className="text-[#888] mb-5">Acceso restringido a la Cámara del Tiempo</p>
           <form onSubmit={handleLogin}>
             <input 
               type="email" 
               className="w-full p-4 mb-5 bg-[#111] border border-[#333] rounded-lg text-white" 
-              placeholder="Email de Supabase"
+              placeholder="Email"
               value={loginForm.email}
               onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
             />
@@ -290,7 +284,6 @@ const App: React.FC = () => {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-dbz-orange text-xl hover:text-white transition-colors"
-                title={showPassword ? "Ocultar contraseña" : "Ver contraseña"}
               >
                 {showPassword ? "🙈" : "👁️"}
               </button>
@@ -313,10 +306,8 @@ const App: React.FC = () => {
         </span>
       </div>
 
-      {/* Audio para feedback de check */}
-      <audio ref={checkSoundRef} src="assets/audio/check-ssj.mp3" preload="auto" />
+      <audio ref={checkSoundRef} src="audio/check-ssj.mp3" preload="auto" />
 
-      {/* Goku Container - Cambia dinámicamente según completedCount */}
       <div className={`relative w-[300px] h-[350px] flex justify-center items-center mb-5 ${isCharging ? 'animate-aura-shake' : ''}`}>
         <div 
           className="absolute w-[180px] h-[280px] rounded-[50%_50%_20%_20%] blur-[40px] z-1 transition-all duration-700 mix-blend-screen"
@@ -333,7 +324,6 @@ const App: React.FC = () => {
         />
       </div>
 
-      {/* Ki Bar */}
       <div className="w-full max-w-[450px] h-[25px] bg-[#222] border-2 border-[#444] rounded-full overflow-hidden mb-8 shadow-[inset_0_0_10px_#000]">
         <div 
           className="h-full transition-all duration-700 ease-out"
@@ -345,7 +335,6 @@ const App: React.FC = () => {
         />
       </div>
 
-      {/* Habit List - Fixed at 5 entries */}
       <ul className="w-full max-w-[450px] space-y-3">
         {habits.slice(0, 5).map(habit => (
           <li 
@@ -363,7 +352,6 @@ const App: React.FC = () => {
               <button 
                 onClick={(e) => { e.stopPropagation(); editHabit(habit.id, habit.text); }}
                 className="p-1 text-ssj-gold hover:bg-yellow-500/20 rounded text-xl"
-                title="Editar entrenamiento"
               >
                 ✎
               </button>
@@ -372,7 +360,6 @@ const App: React.FC = () => {
         ))}
       </ul>
 
-      {/* Scouter Analytics */}
       <div className="w-full max-w-[800px] bg-[rgba(0,20,0,0.9)] border-2 border-green-500 rounded-2xl mt-10 p-5 shadow-[0_0_20px_rgba(0,255,0,0.3)] relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(0,255,0,0.05)_50%,transparent_50%)] bg-[length:100%_4px]" />
         <div className="font-bangers text-[#00ff00] text-2xl text-center border-b border-green-500 pb-3 mb-5 uppercase tracking-widest flex justify-between items-center">
@@ -382,7 +369,7 @@ const App: React.FC = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-green-950/60 border border-green-500 p-4 rounded-lg text-center">
-            <span className="text-[10px] text-green-500 uppercase block mb-1">Rango Saiyan</span>
+            <span className="text-[10px] text-green-500 uppercase block mb-1">Rango</span>
             <div className="text-xl font-bold">{getSaiyanRank(avgPwr)}</div>
           </div>
           <div className="bg-green-950/60 border border-green-500 p-4 rounded-lg text-center">
@@ -401,19 +388,17 @@ const App: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-5">
           <div className="bg-black/50 p-4 rounded-xl border border-green-500/20 h-[250px]">
-            <h3 className="text-green-500 font-bangers text-center mb-3">Progreso Semanal</h3>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={getWeeklyData()}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#004400" />
                 <XAxis dataKey="name" stroke="#00ff00" fontSize={10} />
                 <YAxis domain={[0, 100]} stroke="#00ff00" fontSize={10} />
                 <Tooltip contentStyle={{ backgroundColor: '#002200', borderColor: '#00ff00' }} itemStyle={{ color: '#00ff00' }} />
-                <Line type="monotone" dataKey="ki" stroke="#00ff00" strokeWidth={3} dot={{ fill: '#00ff00' }} activeDot={{ r: 8 }} />
+                <Line type="monotone" dataKey="ki" stroke="#00ff00" strokeWidth={3} dot={{ fill: '#00ff00' }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
           <div className="bg-black/50 p-4 rounded-xl border border-green-500/20 h-[250px]">
-            <h3 className="text-green-500 font-bangers text-center mb-3">Consistencia</h3>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={getMonthlyData()}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#004400" />
@@ -428,7 +413,7 @@ const App: React.FC = () => {
 
         <div className="text-center mt-5">
           <button onClick={handleLogout} className="text-xs text-red-500 border border-red-500 px-3 py-1 rounded hover:bg-red-500 hover:text-white transition-colors">
-            Cerrar Sesión (Abandonar Entrenamiento)
+            Cerrar Sesión
           </button>
         </div>
       </div>
