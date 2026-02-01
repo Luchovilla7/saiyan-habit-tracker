@@ -9,7 +9,7 @@ const ASSETS_TO_CACHE = [
   'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj3.png',
   'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj4.png',
   'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj5.png',
-  'https://raw.githubusercontent.com/rafaelcastrocouto/dbz/master/audio/check.mp3'
+  'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/audio/check-ssj.mp3'
 ];
 
 self.addEventListener('install', (event) => {
