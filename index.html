@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Saiyan Habit Tracker - PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              dbz: {
+                orange: '#FF9000',
+                blue: '#0046AD',
+              },
+              ssj: {
+                gold: '#ffcc00',
+                red: '#ff0000',
+                silver: '#e0e0e0'
+              }
+            },
+            fontFamily: {
+              bangers: ['Bangers', 'cursive'],
+              roboto: ['Roboto', 'sans-serif'],
+            },
+            animation: {
+              'aura-shake': 'shake 0.15s infinite',
+            },
+            keyframes: {
+              shake: {
+                '0%, 100%': { transform: 'translate(2px, 2px)' },
+                '25%': { transform: 'translate(-2px, -2px)' },
+                '50%': { transform: 'translate(-3px, 1px)' },
+                '75%': { transform: 'translate(2px, -1px)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "recharts": "https://esm.sh/recharts@^3.7.0",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.93.3"
+  }
+}
+</script>
+</head>
+<body class="bg-[#0a0a0a] text-white font-roboto m-0 p-0 overflow-x-hidden">
+    <div id="root"></div>
+    <script type="module" src="index.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          // Use a relative path './sw.js' to ensure the origin matches the current page
+          navigator.serviceWorker.register('./sw.js')
+            .then(registration => {
+              console.log('ServiceWorker registration successful on scope:', registration.scope);
+            })
+            .catch(err => {
+              console.warn('ServiceWorker registration failed (this is common in some development/sandboxed environments):', err);
+            });
+        });
+      }
+    </script>
+</body>
+</html>
