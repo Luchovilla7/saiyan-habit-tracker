@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Saiyan Habit Tracker</title>
     
-    <!-- PWA Basic -->
+    <!-- PWA Core -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#FF9000">
+    <meta name="mobile-web-app-capable" content="yes">
     <link rel="icon" href="https://img.icons8.com/color/48/dragon-ball.png" type="image/png">
     
-    <!-- iOS Specific -->
+    <!-- Apple PWA Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SaiyanTracker">
     <link rel="apple-touch-icon" href="https://img.icons8.com/color/192/dragon-ball.png">
-    
-    <!-- Android / General -->
-    <meta name="mobile-web-app-capable" content="yes">
     
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -31,29 +29,20 @@
             fontFamily: {
               bangers: ['Bangers', 'cursive'],
               roboto: ['Roboto', 'sans-serif'],
-            },
-            animation: { 'aura-shake': 'shake 0.15s infinite' },
-            keyframes: {
-              shake: {
-                '0%, 100%': { transform: 'translate(1px, 1px)' },
-                '25%': { transform: 'translate(-1px, -1px)' },
-                '50%': { transform: 'translate(-1px, 1px)' },
-                '75%': { transform: 'translate(1px, -1px)' },
-              }
             }
           }
         }
       }
     </script>
-<script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.4",
     "react-dom": "https://esm.sh/react-dom@^19.2.4",
     "recharts": "https://esm.sh/recharts@^3.7.0",
     "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.93.3",
-    "react/": "https://esm.sh/react@^19.2.4/",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
   }
 }
 </script>
@@ -64,9 +53,9 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js', { scope: '/' })
-            .then(reg => console.log('Saiyan SW Listo'))
-            .catch(err => console.log('SW Error:', err));
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Saiyan SW Registrado'))
+            .catch(err => console.error('Error SW:', err));
         });
       }
     </script>

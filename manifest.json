@@ -1,4 +1,3 @@
-
 {
   "name": "Saiyan Habit Tracker",
   "short_name": "SaiyanTracker",
@@ -8,6 +7,7 @@
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#FF9000",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "https://img.icons8.com/color/192/dragon-ball.png",
@@ -26,12 +26,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
-    },
-    {
-      "src": "https://img.icons8.com/color/512/dragon-ball.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
     }
   ]
 }
