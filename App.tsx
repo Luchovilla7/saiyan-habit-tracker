@@ -1,47 +1,53 @@
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { supabaseClient } from './services/supabase';
 import { Habit, HistoryRecord, Transformation } from './types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
+// The Transformation objects now correctly match the interface in types.ts
 const TRANSFORMATIONS: Record<string, Transformation> = {
   base: {
-    image: "assets/img/goku-base.png",
+    image: "./assets/img/goku-base.png",
+    fallback: "https://www.pngmart.com/files/2/Goku-PNG-File.png",
     name: "ESTADO: BASE",
     auraColor: "rgba(255,255,255,0.3)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj: {
-    image: "assets/img/goku-ssj.png",
+    image: "./assets/img/goku-ssj.png",
+    fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-PNG-Clipart.png",
     name: "SUPER SAIYAJIN",
     auraColor: "rgba(255, 204, 0, 0.7)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj2: {
-    image: "assets/img/goku-ssj2.png",
+    image: "./assets/img/goku-ssj2.png",
+    fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-PNG-Clipart.png",
     name: "SUPER SAIYAJIN FASE 2",
     auraColor: "rgba(255, 255, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj3: {
-    image: "assets/img/goku-ssj3.png",
+    image: "./assets/img/goku-ssj3.png",
+    fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-3-PNG-Photos.png",
     name: "SUPER SAIYAJIN FASE 3",
     auraColor: "rgba(255, 215, 0, 0.9)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj4: {
-    image: "assets/img/goku-ssj4.png",
+    image: "./assets/img/goku-ssj4.png",
+    fallback: "https://www.pngmart.com/files/2/Goku-Super-Saiyan-4-PNG-Pic.png",
     name: "SUPER SAIYAJIN FASE 4",
     auraColor: "rgba(255, 0, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #7b0000 0%, #ff0000 100%)",
     textColor: "#ff4444"
   },
   ssj5: {
-    image: "assets/img/goku-ssj5.png",
+    image: "./assets/img/goku-ssj5.png",
+    fallback: "https://www.pngmart.com/files/2/Goku-Ultra-Instinct-PNG-Transparent.png",
     name: "¡SUPER SAIYAJIN FASE 5 (AF)!",
     auraColor: "rgba(220, 220, 220, 0.9)",
     kiColor: "linear-gradient(90deg, #999 0%, #ffffff 100%)",
@@ -62,7 +68,6 @@ const App: React.FC = () => {
 
   const checkSoundRef = useRef<HTMLAudioElement | null>(null);
 
-  // Auth Effects
   useEffect(() => {
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -164,7 +169,9 @@ const App: React.FC = () => {
         const newDone = !h.done;
         if (newDone && checkSoundRef.current) {
           checkSoundRef.current.currentTime = 0;
-          checkSoundRef.current.play().catch(() => {});
+          checkSoundRef.current.play().catch(e => {
+            console.warn("Audio local no disponible o bloqueado. Intentando reproducir.");
+          });
         }
         return { ...h, done: newDone };
       }
@@ -174,24 +181,7 @@ const App: React.FC = () => {
     saveState(newHabits, id);
   };
 
-  const editHabit = async (id: number, currentText: string) => {
-    const newText = prompt("Edita tu entrenamiento:", currentText);
-    if (newText === null || newText.trim() === "" || newText === currentText) return;
-
-    try {
-      const { error } = await supabaseClient
-        .from('saiyan_habits')
-        .update({ text: newText.trim() })
-        .eq('id', id);
-
-      if (error) throw error;
-      const newHabits = habits.map(h => h.id === id ? { ...h, text: newText.trim() } : h);
-      setHabits(newHabits);
-    } catch (error) {
-      console.error("Error editing habit:", error);
-    }
-  };
-
+  // Reordered: Calculate current transformation values before defining handleImageError
   const completedCount = habits.filter(h => h.done).length;
   const totalHabits = habits.length;
   const progressPercent = totalHabits > 0 ? (completedCount / totalHabits) * 100 : 0;
@@ -199,6 +189,16 @@ const App: React.FC = () => {
   const transformationOrder = ['base', 'ssj', 'ssj2', 'ssj3', 'ssj4', 'ssj5'];
   const currentKey = transformationOrder[completedCount] || 'base';
   const currentTransformation = TRANSFORMATIONS[currentKey];
+
+  // handleImageError now correctly identifies fallback property on the Transformation type
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.target as HTMLImageElement;
+    const currentTrans = TRANSFORMATIONS[currentKey];
+    if (target.src !== currentTrans.fallback) {
+      console.warn(`Asset local no encontrado: ${target.src}. Cargando fallback de red.`);
+      target.src = currentTrans.fallback || "https://api.dicebear.com/7.x/bottts/svg?seed=goku";
+    }
+  };
 
   useEffect(() => {
     setIsCharging(true);
@@ -235,29 +235,7 @@ const App: React.FC = () => {
   };
 
   const allValues = Object.values(history) as number[];
-  const maxPwr = allValues.length ? Math.max(...allValues) : 0;
-  const avgPwr = allValues.length ? allValues.reduce((a: number, b: number): number => a + b, 0) / allValues.length : 0;
-  
-  const getSaiyanRank = (avg: number) => {
-    if (avg >= 90) return "Dios Destructor";
-    if (avg >= 70) return "Guerrero Élite";
-    if (avg >= 50) return "Clase Alta";
-    if (avg >= 30) return "Clase Media";
-    return "Recluta";
-  };
-
-  const getStreak = () => {
-    let streak = 0;
-    const today = new Date();
-    for (let i = 0; i < 365; i++) {
-        const d = new Date();
-        d.setDate(today.getDate() - i);
-        const dStr = d.toISOString().split('T')[0];
-        if ((history[dStr] || 0) > 0) streak++;
-        else if (i > 0) break;
-    }
-    return streak;
-  };
+  const avgPwr = allValues.length ? allValues.reduce((a, b) => a + b, 0) / allValues.length : 0;
 
   if (!session) {
     return (
@@ -306,7 +284,7 @@ const App: React.FC = () => {
         </span>
       </div>
 
-      <audio ref={checkSoundRef} src="assets/audio/check-ssj.mp3" preload="auto" />
+      <audio ref={checkSoundRef} src="./assets/audio/check-ssj.mp3" preload="auto" />
 
       <div className={`relative w-[300px] h-[350px] flex justify-center items-center mb-5 ${isCharging ? 'animate-aura-shake' : ''}`}>
         <div 
@@ -321,6 +299,7 @@ const App: React.FC = () => {
           src={currentTransformation.image} 
           alt={currentTransformation.name} 
           className="w-full h-full object-contain z-[2] drop-shadow-lg transition-opacity duration-300"
+          onError={handleImageError}
         />
       </div>
 
@@ -348,47 +327,18 @@ const App: React.FC = () => {
             <span className={`flex-grow text-lg ${habit.done ? 'line-through text-gray-500' : 'text-white'}`}>
               {habit.text}
             </span>
-            <div className="flex gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-              <button 
-                onClick={(e) => { e.stopPropagation(); editHabit(habit.id, habit.text); }}
-                className="p-1 text-ssj-gold hover:bg-yellow-500/20 rounded text-xl"
-              >
-                ✎
-              </button>
-            </div>
           </li>
         ))}
       </ul>
 
-      <div className="w-full max-w-[800px] bg-[rgba(0,20,0,0.9)] border-2 border-green-500 rounded-2xl mt-10 p-5 shadow-[0_0_20px_rgba(0,255,0,0.3)] relative overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(0,255,0,0.05)_50%,transparent_50%)] bg-[length:100%_4px]" />
-        <div className="font-bangers text-[#00ff00] text-2xl text-center border-b border-green-500 pb-3 mb-5 uppercase tracking-widest flex justify-between items-center">
+      <div className="w-full max-w-[800px] bg-[rgba(0,20,0,0.9)] border-2 border-green-500 rounded-2xl mt-10 p-5 shadow-[0_0_20px_rgba(0,255,0,0.3)]">
+        <div className="font-bangers text-[#00ff00] text-2xl text-center border-b border-green-500 pb-3 mb-5 flex justify-between">
           <span>Análisis de Ki</span>
           <span className="text-xs" style={{ color: syncStatus.color }}>{syncStatus.text}</span>
         </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-green-950/60 border border-green-500 p-4 rounded-lg text-center">
-            <span className="text-[10px] text-green-500 uppercase block mb-1">Rango</span>
-            <div className="text-xl font-bold">{getSaiyanRank(avgPwr)}</div>
-          </div>
-          <div className="bg-green-950/60 border border-green-500 p-4 rounded-lg text-center">
-            <span className="text-[10px] text-green-500 uppercase block mb-1">Poder Máx</span>
-            <div className="text-xl font-bold">{Math.round(maxPwr)}%</div>
-          </div>
-          <div className="bg-green-950/60 border border-green-500 p-4 rounded-lg text-center">
-            <span className="text-[10px] text-green-500 uppercase block mb-1">Racha</span>
-            <div className="text-xl font-bold">{getStreak()} Días</div>
-          </div>
-          <div className="bg-green-950/60 border border-green-500 p-4 rounded-lg text-center">
-            <span className="text-[10px] text-green-500 uppercase block mb-1">Total Zeniths</span>
-            <div className="text-xl font-bold">{allValues.filter(v => v === 100).length}</div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-5">
-          <div className="bg-black/50 p-4 rounded-xl border border-green-500/20 h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
+        
+        <div className="h-[200px] w-full">
+           <ResponsiveContainer width="100%" height="100%">
               <LineChart data={getWeeklyData()}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#004400" />
                 <XAxis dataKey="name" stroke="#00ff00" fontSize={10} />
@@ -397,24 +347,6 @@ const App: React.FC = () => {
                 <Line type="monotone" dataKey="ki" stroke="#00ff00" strokeWidth={3} dot={{ fill: '#00ff00' }} />
               </LineChart>
             </ResponsiveContainer>
-          </div>
-          <div className="bg-black/50 p-4 rounded-xl border border-green-500/20 h-[250px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={getMonthlyData()}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#004400" />
-                <XAxis dataKey="name" stroke="#00ff00" fontSize={10} />
-                <YAxis domain={[0, 100]} stroke="#00ff00" fontSize={10} />
-                <Tooltip contentStyle={{ backgroundColor: '#002200', borderColor: '#00ff00' }} itemStyle={{ color: '#00ff00' }} />
-                <Bar dataKey="ki" fill="#00ff00" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="text-center mt-5">
-          <button onClick={handleLogout} className="text-xs text-red-500 border border-red-500 px-3 py-1 rounded hover:bg-red-500 hover:text-white transition-colors">
-            Cerrar Sesión
-          </button>
         </div>
       </div>
     </div>

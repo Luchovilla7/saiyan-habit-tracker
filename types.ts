@@ -13,6 +13,8 @@ export interface HistoryRecord {
 
 export interface Transformation {
   image: string;
+  // Added fallback property to provide a backup URL when local assets fail to load
+  fallback: string;
   name: string;
   auraColor: string;
   kiColor: string;
