@@ -4,13 +4,13 @@ const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
-  './img/goku-base.png',
-  './img/goku-ssj.png',
-  './img/goku-ssj2.png',
-  './img/goku-ssj3.png',
-  './img/goku-ssj4.png',
-  './img/goku-ssj5.png',
-  './audio/check-ssj.mp3'
+  './assets/img/goku-base.png',
+  './assets/img/goku-ssj.png',
+  './assets/img/goku-ssj2.png',
+  './assets/img/goku-ssj3.png',
+  './assets/img/goku-ssj4.png',
+  './assets/img/goku-ssj5.png',
+  './assets/audio/check-ssj.mp3'
 ];
 
 self.addEventListener('install', (event) => {

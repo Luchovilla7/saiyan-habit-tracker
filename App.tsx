@@ -6,42 +6,42 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const TRANSFORMATIONS: Record<string, Transformation> = {
   base: {
-    image: "img/goku-base.png",
+    image: "assets/img/goku-base.png",
     name: "ESTADO: BASE",
     auraColor: "rgba(255,255,255,0.3)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj: {
-    image: "img/goku-ssj.png",
+    image: "assets/img/goku-ssj.png",
     name: "SUPER SAIYAJIN",
     auraColor: "rgba(255, 204, 0, 0.7)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj2: {
-    image: "img/goku-ssj2.png",
+    image: "assets/img/goku-ssj2.png",
     name: "SUPER SAIYAJIN FASE 2",
     auraColor: "rgba(255, 255, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj3: {
-    image: "img/goku-ssj3.png",
+    image: "assets/img/goku-ssj3.png",
     name: "SUPER SAIYAJIN FASE 3",
     auraColor: "rgba(255, 215, 0, 0.9)",
     kiColor: "linear-gradient(90deg, #fceabb 0%, #f8b500 100%)",
     textColor: "#ffcc00"
   },
   ssj4: {
-    image: "img/goku-ssj4.png",
+    image: "assets/img/goku-ssj4.png",
     name: "SUPER SAIYAJIN FASE 4",
     auraColor: "rgba(255, 0, 0, 0.8)",
     kiColor: "linear-gradient(90deg, #7b0000 0%, #ff0000 100%)",
     textColor: "#ff4444"
   },
   ssj5: {
-    image: "img/goku-ssj5.png",
+    image: "assets/img/goku-ssj5.png",
     name: "¡SUPER SAIYAJIN FASE 5 (AF)!",
     auraColor: "rgba(220, 220, 220, 0.9)",
     kiColor: "linear-gradient(90deg, #999 0%, #ffffff 100%)",
@@ -306,7 +306,7 @@ const App: React.FC = () => {
         </span>
       </div>
 
-      <audio ref={checkSoundRef} src="audio/check-ssj.mp3" preload="auto" />
+      <audio ref={checkSoundRef} src="assets/audio/check-ssj.mp3" preload="auto" />
 
       <div className={`relative w-[300px] h-[350px] flex justify-center items-center mb-5 ${isCharging ? 'animate-aura-shake' : ''}`}>
         <div 
