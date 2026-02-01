@@ -1,8 +1,10 @@
-const CACHE_NAME = 'saiyan-tracker-v9';
+const CACHE_NAME = 'saiyan-tracker-v10';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
+  'https://img.icons8.com/color/192/dragon-ball.png',
+  'https://img.icons8.com/color/512/dragon-ball.png',
   'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-base.png',
   'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj.png',
   'https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/img/goku-ssj2.png',
@@ -20,7 +22,7 @@ self.addEventListener('install', (event) => {
       ).then(results => {
         const failed = results.filter(r => r.status === 'rejected');
         if (failed.length > 0) {
-          console.warn('Algunos assets remotos no se pudieron cachear para offline:', failed);
+          console.warn('No se pudieron cachear algunos iconos:', failed);
         }
         return cache;
       });

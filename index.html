@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Saiyan Habit Tracker - PWA</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="favicon.ico" type="image/png">
+    <link rel="icon" href="https://img.icons8.com/color/48/dragon-ball.png" type="image/png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -63,13 +63,12 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Use a relative path './sw.js' to ensure the origin matches the current page
           navigator.serviceWorker.register('./sw.js')
             .then(registration => {
               console.log('ServiceWorker registration successful on scope:', registration.scope);
             })
             .catch(err => {
-              console.warn('ServiceWorker registration failed (this is common in some development/sandboxed environments):', err);
+              console.warn('ServiceWorker registration failed:', err);
             });
         });
       }
