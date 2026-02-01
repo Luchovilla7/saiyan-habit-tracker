@@ -327,6 +327,13 @@ const App: React.FC = () => {
             </ResponsiveContainer>
         </div>
       </div>
+
+      <button 
+        onClick={handleLogout}
+        className="w-full max-w-[450px] mt-10 p-4 bg-red-600 hover:bg-red-700 text-white font-bangers text-2xl rounded-xl transition-all shadow-[0_4px_10px_rgba(255,0,0,0.3)] border border-red-500 active:scale-95"
+      >
+        CERRAR SESIÓN
+      </button>
     </div>
   );
 };
