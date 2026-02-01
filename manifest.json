@@ -1,11 +1,11 @@
-
 {
   "name": "Saiyan Habit Tracker",
   "short_name": "SaiyanTracker",
   "description": "Transform into a Super Saiyan by completing your daily habits.",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0a0a0a",
   "theme_color": "#FF9000",
   "icons": [
