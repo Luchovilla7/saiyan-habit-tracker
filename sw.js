@@ -1,32 +1,28 @@
-const CACHE_NAME = 'saiyan-pwa-v24';
+const CACHE_NAME = 'saiyan-pwa-v27';
 const STATIC_ASSETS = [
-  'index.html',
-  'index.tsx',
-  'manifest.json',
+  '/',
+  '/index.html',
+  '/manifest.json',
   'https://fonts.googleapis.com/css2?family=Bangers&family=Roboto:wght@400;700&display=swap',
   'https://cdn.tailwindcss.com'
 ];
 
-// Instalación: Cachear activos críticos
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Saiyan Cache: Pre-caching assets');
+      console.log('Saiyan SW: Entrenando cache...');
       return cache.addAll(STATIC_ASSETS);
     })
   );
   self.skipWaiting();
 });
 
-// Activación: Limpiar caches antiguos
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       );
     })
@@ -34,34 +30,45 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: Estrategia Network-First con Fallback a Cache para navegación
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  // Manejo especial para navegación (evita el 404 al recargar o abrir desde home)
+  // Manejo de navegación para evitar 404s
   if (event.request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match('index.html');
-      })
+      fetch(event.request)
+        .then(response => {
+          // Si Netlify da error o no encuentra la ruta, servimos el index.html
+          if (!response || response.status !== 200) {
+            return caches.match('/index.html') || caches.match('/');
+          }
+          return response;
+        })
+        .catch(() => {
+          // Si estamos offline, servimos el index.html
+          return caches.match('/index.html') || caches.match('/');
+        })
     );
     return;
   }
 
-  // Estrategia Stale-While-Revalidate para el resto de activos
+  // Cache-first para el resto de recursos (Fuentes, scripts, imágenes)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request).then((networkResponse) => {
-        if (networkResponse && networkResponse.status === 200) {
-          const cacheCopy = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, cacheCopy);
-          });
+      if (cachedResponse) return cachedResponse;
+      
+      return fetch(event.request).then((networkResponse) => {
+        if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+          return networkResponse;
         }
+        
+        const responseToCache = networkResponse.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseToCache);
+        });
+        
         return networkResponse;
-      }).catch(() => cachedResponse);
-
-      return cachedResponse || fetchPromise;
+      }).catch(() => null);
     })
   );
 });
