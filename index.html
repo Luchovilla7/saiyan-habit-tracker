@@ -12,7 +12,7 @@
     <meta name="application-name" content="SaiyanTracker">
     <link rel="icon" href="https://img.icons8.com/color/48/dragon-ball.png" type="image/png">
     
-    <!-- Apple PWA Tags -->
+    <!-- Apple PWA Tags (Crucial para que no sea solo un acceso directo) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="SaiyanTracker">
@@ -52,22 +52,18 @@
     <div id="root"></div>
     <script type="module" src="index.tsx"></script>
     <script>
-      // Service Worker registration with extra safety for dynamic environments
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          // Register the Service Worker using a simple relative path
-          // This avoids the 'Invalid URL' error from new URL() in some environments
           navigator.serviceWorker.register('sw.js')
             .then(reg => {
-              console.log('Saiyan SW Registrado con éxito');
+              console.log('Saiyan SW: Sistema de defensa activo');
               
-              // Handle updates smoothly
               reg.onupdatefound = () => {
                 const installingWorker = reg.installing;
                 if (installingWorker) {
                   installingWorker.onstatechange = () => {
                     if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                      console.log('Nuevo contenido disponible; refrescando...');
+                      console.log('Nuevas técnicas detectadas, recargando...');
                       window.location.reload();
                     }
                   };
@@ -75,10 +71,8 @@
               };
             })
             .catch(err => {
-              // Silence origin mismatch errors in development frames if they are expected
-              if (err.message.includes('origin')) {
-                console.warn('SW: Origin mismatch detected. If you are in a preview frame, this is normal.');
-              } else {
+              // Ignorar errores de origen en previsualización
+              if (!err.message.includes('origin')) {
                 console.error('Error al registrar SW:', err);
               }
             });
