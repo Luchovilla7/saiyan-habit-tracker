@@ -1,9 +1,8 @@
-
-const CACHE_NAME = 'saiyan-pwa-v20';
+const CACHE_NAME = 'saiyan-pwa-v22';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  './',
+  'index.html',
+  'manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
@@ -26,15 +25,15 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// El evento fetch es CRÍTICO para que Chrome habilite el botón "Instalar"
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       return cachedResponse || fetch(event.request).catch(() => {
-        // Fallback básico si falla la red y no está en caché
-        return caches.match('/');
+        if (event.request.mode === 'navigate') {
+          return caches.match('./');
+        }
       });
     })
   );
