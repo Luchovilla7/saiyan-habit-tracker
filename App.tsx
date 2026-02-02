@@ -79,7 +79,6 @@ const App: React.FC = () => {
       if (session) loadData();
     });
 
-    // Escuchar el evento de instalación
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -177,13 +176,20 @@ const App: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center min-h-screen p-5 pb-32 max-w-md mx-auto relative overflow-x-hidden">
+      {/* Botón de instalación pequeño y discreto */}
       {deferredPrompt && (
-        <button onClick={handleInstall} className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[1000] bg-dbz-orange text-white px-8 py-4 rounded-full font-bangers text-xl shadow-[0_0_20px_#FF9000] border-2 border-white/20 animate-bounce">
-          ⚡ INSTALAR APP SAIYAN ⚡
+        <button 
+          onClick={handleInstall} 
+          className="absolute top-4 right-4 z-[1000] bg-dbz-orange/20 hover:bg-dbz-orange/40 text-dbz-orange p-2 rounded-full border border-dbz-orange/30 transition-all active:scale-90"
+          title="Instalar App"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
         </button>
       )}
 
-      <h1 className="font-bangers text-5xl text-dbz-orange mb-2 drop-shadow-lg">SAIYAN TRACKER</h1>
+      <h1 className="font-bangers text-5xl text-dbz-orange mb-2 drop-shadow-lg mt-2">SAIYAN TRACKER</h1>
       <p className="font-bangers text-2xl mb-4 transition-colors duration-500" style={{ color: currentTransformation.textColor }}>{currentTransformation.name}</p>
 
       <audio ref={checkSoundRef} src="https://raw.githubusercontent.com/Luchovilla7/tracker-saiyajin/refs/heads/main/audio/check-ssj.mp3" preload="auto" />
